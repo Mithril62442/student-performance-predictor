@@ -24,7 +24,7 @@ print(X_test.shape)
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
-categorical_columns = X.select_dtypes(include=["str"]).columns
+categorical_columns = X.select_dtypes(include=["object"]).columns
 
 preprocessor = ColumnTransformer(
     transformers=[
@@ -72,7 +72,7 @@ print("R² Score:", r2)
 
 from sklearn.ensemble import RandomForestRegressor
 rf = RandomForestRegressor(
-    n_estimators=100,
+    n_estimators=200,
     random_state=42
 )
 
@@ -97,3 +97,27 @@ rf_train_pred = rf_model.predict(X_train)
 rf_train_mae = mean_absolute_error(y_train, rf_train_pred)
 
 print("Random Forest Training MAE:", rf_train_mae)
+from sklearn.model_selection import GridSearchCV
+param_grid = {
+    "regressor__n_estimators": [100, 200, 300],
+    "regressor__max_depth": [None, 5, 10, 15]
+}
+grid_search = GridSearchCV(
+    rf_model,
+    param_grid,
+    cv=5,
+    scoring="neg_mean_absolute_error",
+    n_jobs=1
+)
+grid_search.fit(X_train, y_train)
+print("Best Parameters:", grid_search.best_params_)
+best_model = grid_search.best_estimator_
+best_pred = best_model.predict(X_test)
+best_mae = mean_absolute_error(y_test, best_pred)
+
+print("Tuned Random Forest MAE:", best_mae)
+import joblib
+
+joblib.dump(best_model, "student_performance_model.pkl")
+
+print("Model saved successfully!")
