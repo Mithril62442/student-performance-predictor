@@ -1,115 +1,885 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Create Your Profile</title>
+    <title>Create Your Profile | StudentLy.</title>
+
+
+    <!-- Google Font -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #d686ec;
+
+        /* =====================================
+           RESET
+        ===================================== */
+
+        * {
             margin: 0;
-            padding: 40px;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: auto;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
-
-        h1 {
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .field {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 15px;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: #111827;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
+
+        /* =====================================
+           BODY
+        ===================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            background: #28104d;
+
+            font-family: "Roboto Mono", monospace;
+
+            overflow-x: hidden;
         }
 
-        button:hover {
-            opacity: 0.9;
+
+        /* =====================================
+           NAVBAR
+        ===================================== */
+
+        .navbar {
+
+            width: 100%;
+
+            height: 69px;
+
+            background: #570b53;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 0 38px;
+
+            position: relative;
+
+            z-index: 10;
         }
+
+
+        .logo {
+
+            color: #b9d9df;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 39px;
+
+            font-weight: 700;
+
+            letter-spacing: -1.5px;
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 235px;
+
+            margin-left: auto;
+
+            margin-right: 77px;
+        }
+
+
+        .nav-links a {
+
+            text-decoration: none;
+
+            color: white;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 29px;
+
+            font-weight: 700;
+        }
+
+
+        .login-button {
+
+            width: 193px;
+
+            height: 40px;
+
+            border-radius: 25px;
+
+            background: #b4d8e4;
+
+            color: #24151c;
+
+            text-decoration: none;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 26px;
+
+            font-weight: 700;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: 0.2s ease;
+        }
+
+
+        .login-button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 5px 12px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* =====================================
+           MAIN PAGE
+        ===================================== */
+
+        .page {
+
+            width: 100%;
+
+            min-height: calc(100vh - 69px);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: flex-start;
+        }
+
+
+        .profile-panel {
+
+            width: 963px;
+
+            min-height: calc(100vh - 69px);
+
+            background: #e1d0e9;
+
+            padding-top: 50px;
+
+            padding-bottom: 55px;
+
+            position: relative;
+        }
+
+
+        /* =====================================
+           STEP TEXT
+        ===================================== */
+
+        .step {
+
+            text-align: center;
+
+            color: #111111;
+
+            font-size: 18px;
+
+            font-weight: 400;
+
+            margin-bottom: 48px;
+        }
+
+
+        /* =====================================
+           PAGE TITLE
+        ===================================== */
+
+        .page-title {
+
+            text-align: center;
+
+            color: #050505;
+
+            font-size: 44px;
+
+            line-height: 1;
+
+            font-weight: 700;
+
+            margin-bottom: 38px;
+        }
+
+
+        /* =====================================
+           INTRO TEXT
+        ===================================== */
+
+        .intro {
+
+            text-align: center;
+
+            color: #090909;
+
+            font-size: 22px;
+
+            line-height: 1.4;
+
+            margin-bottom: 37px;
+        }
+
+
+        /* =====================================
+           FORM
+        ===================================== */
+
+        .profile-form {
+
+            width: 482px;
+
+            margin: 0 auto;
+
+            position: relative;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 46px;
+        }
+
+
+        /* =====================================
+           LABEL
+        ===================================== */
+
+        .field-label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            margin-bottom: 13px;
+
+            color: #30205e;
+
+            font-size: 27px;
+
+            line-height: 1.1;
+
+            font-weight: 700;
+        }
+
+
+        .star {
+
+            color: #b0b72b;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 27px;
+
+            line-height: 1;
+        }
+
+
+        /* =====================================
+           INPUT
+        ===================================== */
+
+        .input-box {
+
+            width: 100%;
+
+            height: 45px;
+
+            border: none;
+
+            outline: none;
+
+            border-radius: 17px;
+
+            background: #fff6f7;
+
+            padding: 0 21px;
+
+            font-family: "Roboto Mono", monospace;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: #171717;
+
+            box-shadow:
+                0 18px 26px rgba(91, 69, 101, 0.20);
+
+            transition:
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .input-box::placeholder {
+
+            color: #171717;
+
+            opacity: 1;
+        }
+
+
+        .input-box:focus {
+
+            box-shadow:
+                0 18px 26px rgba(91, 69, 101, 0.20),
+                0 0 0 2px rgba(48, 32, 94, 0.25);
+        }
+
+
+        /* =====================================
+           NEXT BUTTON
+        ===================================== */
+
+        .next-button {
+
+            position: fixed;
+
+            right: calc((100vw - 963px) / 2 + 35px);
+
+            bottom: 19px;
+
+            width: 131px;
+
+            height: 43px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #49262c;
+
+            color: #ffffff;
+
+            font-family: "Roboto Mono", monospace;
+
+            font-size: 19px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                5px 7px 9px rgba(0, 0, 0, 0.22);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .next-button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                6px 9px 11px rgba(0, 0, 0, 0.27);
+        }
+
+
+        .next-button:active {
+
+            transform: translateY(1px);
+
+            box-shadow:
+                2px 3px 5px rgba(0, 0, 0, 0.22);
+        }
+
+
+        /* =====================================
+           FORM ERRORS
+        ===================================== */
 
         .error {
-            color: #d00;
-            font-size: 14px;
-            margin-top: 5px;
+
+            color: #a51d2d;
+
+            font-size: 13px;
+
+            margin-top: 6px;
+
+            padding-left: 5px;
         }
+
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 1100px) {
+
+            .profile-panel {
+
+                width: 100%;
+
+                max-width: 963px;
+            }
+
+
+            .nav-links {
+
+                gap: 100px;
+
+                margin-right: 30px;
+            }
+
+
+            .next-button {
+
+                right: 25px;
+            }
+        }
+
+
+        @media (max-width: 750px) {
+
+            .navbar {
+
+                height: 70px;
+
+                padding: 0 20px;
+            }
+
+
+            .logo {
+
+                font-size: 31px;
+            }
+
+
+            .nav-links {
+
+                display: none;
+            }
+
+
+            .login-button {
+
+                width: 130px;
+
+                height: 40px;
+
+                font-size: 21px;
+            }
+
+
+            .profile-panel {
+
+                min-height: calc(100vh - 70px);
+
+                padding:
+                    45px 25px
+                    100px;
+            }
+
+
+            .step {
+
+                font-size: 16px;
+            }
+
+
+            .page-title {
+
+                font-size: 34px;
+            }
+
+
+            .intro {
+
+                font-size: 18px;
+            }
+
+
+            .profile-form {
+
+                width: 100%;
+
+                max-width: 482px;
+            }
+
+
+            .field-label {
+
+                font-size: 22px;
+            }
+
+
+            .input-box {
+
+                height: 45px;
+            }
+
+
+            .next-button {
+
+                right: 20px;
+
+                bottom: 20px;
+            }
+        }
+
+
+        @media (max-width: 450px) {
+
+            .page-title {
+
+                font-size: 29px;
+            }
+
+
+            .intro {
+
+                font-size: 16px;
+            }
+
+
+            .field-label {
+
+                font-size: 19px;
+            }
+
+
+            .input-box {
+
+                font-size: 14px;
+            }
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
-<div class="container">
 
-    <h1>Create Your Profile 👋</h1>
+    <!-- =====================================
+         NAVBAR
+    ====================================== -->
 
-    <p class="subtitle">
-        Tell us a little about yourself so we can personalise your experience.
-    </p>
+    <nav class="navbar">
 
-    <form method="POST">
 
-        {% csrf_token %}
+        <div class="logo">
+            StudentLy.
+        </div>
 
-        {% for field in form %}
-            <div class="field">
 
-                {{ field.label_tag }}
+        <div class="nav-links">
 
-                {{ field }}
+            <a href="#">
+                How it works
+            </a>
 
-                {% for error in field.errors %}
-                    <div class="error">{{ error }}</div>
-                {% endfor %}
+            <a href="#">
+                About
+            </a>
 
+        </div>
+
+
+        <a href="{% url 'login' %}" class="login-button">
+    Login
+</a>
+
+
+    </nav>
+
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="page">
+
+
+        <section class="profile-panel">
+
+
+            <!-- Step -->
+
+            <div class="step">
+                Step 1 of 2 • Your Profile
             </div>
-        {% endfor %}
 
-        <button type="submit">
-            Continue →
-        </button>
 
-    </form>
+            <!-- Heading -->
 
-</div>
+            <h1 class="page-title">
+                Create Your Profile
+            </h1>
+
+
+            <!-- Description -->
+
+            <p class="intro">
+                Let’s get to know you a little before we begin.
+            </p>
+
+
+
+            <!-- =================================
+                 PROFILE FORM
+            ================================== -->
+
+            <form
+                method="POST"
+                class="profile-form"
+            >
+
+                {% csrf_token %}
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label
+                        for="name"
+                        class="field-label"
+                    >
+
+                        <span class="star">
+                            ★
+                        </span>
+
+                        <span>
+                            What’s your name?
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        class="input-box"
+                        placeholder="Enter your name"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- EDUCATION LEVEL -->
+
+                <div class="form-group">
+
+                    <label
+                        for="education_level"
+                        class="field-label"
+                    >
+
+                        <span class="star">
+                            ★
+                        </span>
+
+                        <span>
+                            What are you studying?
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="education_level"
+                        name="education_level"
+                        class="input-box"
+                        placeholder="School/College/University"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- CURRENT YEAR -->
+
+                <div class="form-group">
+
+                    <label
+                        for="current_year"
+                        class="field-label"
+                    >
+
+                        <span class="star">
+                            ★
+                        </span>
+
+                        <span>
+                            What is your current class/year?
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="current_year"
+                        name="current_year"
+                        class="input-box"
+                        placeholder="E.g. Class 12/ 2nd Yr"
+                        maxlength="50"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- INSTITUTION -->
+
+                <div class="form-group">
+
+                    <label
+                        for="institution"
+                        class="field-label"
+                    >
+
+                        <span class="star">
+                            ★
+                        </span>
+
+                        <span>
+                            Where do you study?
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="institution"
+                        name="institution"
+                        class="input-box"
+                        placeholder="Enter your school/college/university"
+                        maxlength="150"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- TERM -->
+
+                <div class="form-group">
+
+                    <label
+                        for="term"
+                        class="field-label"
+                    >
+
+                        <span class="star">
+                            ★
+                        </span>
+
+                        <span>
+                            Semester/Term
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="term"
+                        name="term"
+                        class="input-box"
+                        placeholder="E.g. 1st Sem"
+                        maxlength="50"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- ACADEMIC YEAR -->
+
+                <div class="form-group">
+
+                    <label
+                        for="academic_year"
+                        class="field-label"
+                    >
+
+                        <span class="star">
+                            ★
+                        </span>
+
+                        <span>
+                            Academic Year?
+                        </span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="academic_year"
+                        name="academic_year"
+                        class="input-box"
+                        placeholder="E.g. 2026-27"
+                        maxlength="20"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- NEXT -->
+
+                <button
+                    type="submit"
+                    class="next-button"
+                >
+                    Next →
+                </button>
+
+
+            </form>
+
+
+        </section>
+
+    </main>
+
 
 </body>
+
 </html>

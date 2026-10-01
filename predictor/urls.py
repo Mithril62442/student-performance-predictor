@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
-from .views import home, create_profile, login_view
+from .views import home, create_profile, create_account, login_view
 
 
 urlpatterns = [
@@ -11,6 +11,8 @@ urlpatterns = [
     path("profile/", create_profile, name="create_profile"),
 
     path("login/", login_view, name="login"),
+
+    path("create-account/", create_account, name="create_account"),
 
     # Forgot password
     path(

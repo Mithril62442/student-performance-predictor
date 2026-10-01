@@ -2,59 +2,27 @@ from django import forms
 
 
 class ProfileForm(forms.Form):
+
     name = forms.CharField(
-        max_length=100,
-        label="Your Name",
-        widget=forms.TextInput(attrs={
-            "placeholder": "Enter your name"
-        })
+        max_length=100
     )
 
-    education_level = forms.ChoiceField(
-        choices=[
-            ("school", "School"),
-            ("college", "College"),
-            ("university", "University"),
-        ],
-        label="Education Level"
+    education_level = forms.CharField(
+        max_length=100
     )
 
     current_year = forms.CharField(
-        max_length=50,
-        label="Current Class / Year",
-        widget=forms.TextInput(attrs={
-            "placeholder": "e.g. Class 12 / 2nd Year"
-        })
+        max_length=50
     )
 
     institution = forms.CharField(
-        max_length=150,
-        label="School / College / University",
-        widget=forms.TextInput(attrs={
-            "placeholder": "Enter your institution"
-        })
-    )
-
-    academic_year = forms.CharField(
-        max_length=20,
-        label="Academic Year",
-        widget=forms.TextInput(attrs={
-            "placeholder": "e.g. 2026-27"
-        })
+        max_length=150
     )
 
     term = forms.CharField(
-        max_length=50,
-        label="Semester / Term",
-        widget=forms.TextInput(attrs={
-            "placeholder": "e.g. Semester 1"
-        })
+        max_length=50
     )
 
-    maximum_marks = forms.IntegerField(
-        min_value=1,
-        label="Maximum Marks",
-        widget=forms.NumberInput(attrs={
-            "placeholder": "e.g. 100"
-        })
+    academic_year = forms.CharField(
+        max_length=20
     )
