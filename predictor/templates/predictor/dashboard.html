@@ -1,0 +1,552 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudentLy. | Your Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <a href="{% url 'home' %}" class="brand">StudentLy.</a>
+
+        <nav class="navigation">
+
+            <a href="#prediction" class="nav-link">
+                <span>⌁</span> Performance Prediction
+            </a>
+
+            <a href="#academic" class="nav-link">
+                <span>▥</span> Academic Overview
+            </a>
+
+            <a href="#goals" class="nav-link">
+                <span>◎</span> Goals
+            </a>
+
+            <a href="#subjects" class="nav-link">
+                <span>▤</span> Subject Tracker
+            </a>
+
+            <a href="#streak" class="nav-link">
+                <span>◷</span> Study Streak
+            </a>
+
+            <a href="#wellbeing" class="nav-link">
+                <span>♡</span> Wellbeing
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-user">
+                <div class="avatar">
+                    {% if profile and profile.name %}
+                        {{ profile.name|first|upper }}
+                    {% else %}
+                        {{ request.user.username|first|upper }}
+                    {% endif %}
+                </div>
+
+                <div class="user-details">
+                    <strong>
+                        {% if profile and profile.name %}
+                            {{ profile.name }}
+                        {% else %}
+                            {{ request.user.username }}
+                        {% endif %}
+                    </strong>
+                    <small>My StudentLy. account</small>
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">
+                    Log out ↗
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN DASHBOARD -->
+    <main class="main-content">
+
+        <header class="page-header">
+
+            <div>
+                <h1>
+                    Welcome Back,
+                    {% if profile and profile.name %}
+                        {{ profile.name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </h1>
+
+                <p class="page-subtitle">
+                    Your journey, your progress, your pace.
+                </p>
+            </div>
+
+            <a href="{% url 'create_profile' %}" class="profile-button"
+               aria-label="View profile">
+                <span></span>
+            </a>
+
+        </header>
+
+
+        <!-- DASHBOARD GRID -->
+        <div class="dashboard-grid">
+
+            <!-- ACADEMIC PROGRESS -->
+            <section class="panel academic-panel" id="academic">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Academic Progress</h2>
+                        <p>GPA Trend &amp; Performance</p>
+                    </div>
+                </div>
+
+                {% if academic_labels %}
+
+                    <div class="chart-wrapper">
+                        <canvas id="academicChart"></canvas>
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-chart">
+                        <span>↗</span>
+                        <p>Your academic progress will appear here.</p>
+                        <small>Add an academic record to get started.</small>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- SUBJECT TRACKER -->
+            <section class="panel subjects-panel" id="subjects">
+
+                <h2>Subject<br>Tracker</h2>
+
+                {% if subjects %}
+
+                    <div class="subject-list">
+
+                        {% for subject in subjects %}
+
+                            <div class="subject-item">
+
+                                <div class="subject-title">
+                                    <span>
+                                        {% if subject.code %}
+                                            {{ subject.code }}
+                                        {% else %}
+                                            {{ subject.name }}
+                                        {% endif %}
+                                    </span>
+
+                                    {% if subject.marks != None %}
+                                        <strong>{{ subject.percentage }}%</strong>
+                                    {% else %}
+                                        <strong>—</strong>
+                                    {% endif %}
+                                </div>
+
+                                <div class="subject-track">
+                                    {% if subject.marks != None %}
+                                        <div class="subject-fill
+                                            subject-color-{{ forloop.counter0|divisibleby:4|yesno:'0,1' }}"
+                                            style="width: {{ subject.percentage }}%;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <p class="subject-name">{{ subject.name }}</p>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-subjects">
+                        <p>No subjects added yet.</p>
+                        <small>Your subject progress will appear here.</small>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- WEEKLY GOALS -->
+            <section class="panel goals-panel" id="goals">
+
+                <div class="target-decoration" aria-hidden="true">🎯</div>
+
+                <h2>Weekly Goals</h2>
+
+                {% if goals %}
+
+                    <div class="goal-list">
+
+                        {% for goal in goals %}
+
+                            <div class="goal-item">
+
+                                <span class="goal-circle
+                                    {% if goal.completed %}is-complete{% endif %}">
+                                    {% if goal.completed %}✓{% endif %}
+                                </span>
+
+                                <span class="{% if goal.completed %}goal-completed{% endif %}">
+                                    {{ goal.title }}
+                                </span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-goals">
+                        <p>No goals for this week yet.</p>
+                        <small>Your weekly goals will appear here.</small>
+                    </div>
+
+                {% endif %}
+
+                <div class="goal-summary">
+                    {{ completed_goals }} of {{ total_goals }} goals completed
+                </div>
+
+            </section>
+
+
+            <!-- STUDY STREAK -->
+            <section class="panel streak-panel" id="streak">
+
+                <div class="streak-top">
+                    <div>
+                        <p class="streak-label">STUDY STREAK</p>
+
+                        <div class="streak-number">
+                            {{ streak }}
+                            <span>day{{ streak|pluralize }}</span>
+                        </div>
+
+                        <p class="streak-caption">
+                            Consecutive days with recorded study
+                        </p>
+                    </div>
+
+                    <span class="streak-badge">
+                        ✦ {{ streak }} days
+                    </span>
+                </div>
+
+                <div class="week-tracker">
+
+                    {% for day in streak_days %}
+
+                        <div class="day-column">
+
+                            <span class="day-name">{{ day.label }}</span>
+
+                            <span class="day-circle
+                                {% if day.studied %}day-studied{% endif %}">
+                                {% if day.studied %}✓{% endif %}
+                            </span>
+
+                            <small>{{ day.hours }}h</small>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="streak-footer">
+                    <span>✦ Your effort matters.</span>
+                    <span>{{ weekly_hours }} hrs this week</span>
+                </div>
+
+            </section>
+
+
+            <!-- COMPANION CREATURE -->
+            <section class="companion-area" id="wellbeing">
+
+                <div class="speech-bubble" id="companionMessage">
+                    Hi, how can I help you?
+                </div>
+
+                <button type="button" class="companion-button"
+                        id="companionButton"
+                        aria-label="Open wellbeing companion"
+                        aria-expanded="false">
+
+                    <span class="companion-hat">
+                        <span></span>
+                    </span>
+
+                    <span class="creature-body">
+
+                        <span class="creature-eye eye-left"></span>
+                        <span class="creature-eye eye-right"></span>
+
+                        <span class="creature-cheek cheek-left"></span>
+                        <span class="creature-cheek cheek-right"></span>
+
+                        <span class="creature-mouth"></span>
+
+                        <span class="creature-belly"></span>
+
+                        <span class="creature-arm arm-left"></span>
+                        <span class="creature-arm arm-right"></span>
+
+                    </span>
+
+                    <span class="creature-shadow"></span>
+
+                </button>
+
+                <p class="companion-caption">Your wellbeing companion</p>
+
+                <!-- Initial interaction panel -->
+                <div class="companion-chat" id="companionChat" hidden>
+
+                    <div class="chat-header">
+                        <div>
+                            <strong>Your little companion</strong>
+                            <small>Here to listen</small>
+                        </div>
+
+                        <button type="button" id="closeChat"
+                                aria-label="Close chat">×</button>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message bot-message">
+                            Hey! 💜 How are you feeling today?
+                            You can tell me what's on your mind.
+                        </div>
+                    </div>
+
+                    <form id="companionForm" class="chat-form">
+                        <input
+                            type="text"
+                            id="companionInput"
+                            placeholder="Tell me how you're feeling..."
+                            maxlength="500"
+                            autocomplete="off"
+                            required
+                        >
+
+                        <button type="submit" aria-label="Send message">➤</button>
+                    </form>
+
+                    <p class="chat-note">
+                        This starter chat is not connected to an AI service yet.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- DAILY MOOD -->
+            <section class="panel mood-panel" id="mood-checkin">
+
+                <div class="mood-heading">
+                    <h2>How are you feeling today?</h2>
+                    <span>Daily Check-in</span>
+                </div>
+
+                {% if latest_mood and latest_mood.date == today %}
+
+                    <p class="mood-saved">
+                        Today's mood:
+                        <strong>{{ latest_mood.get_mood_display }}</strong>
+                    </p>
+
+                {% endif %}
+
+                <form method="post" class="mood-options">
+                    {% csrf_token %}
+
+                    {% for option in mood_options %}
+
+                        <button
+                            type="submit"
+                            name="mood"
+                            value="{{ option.value }}"
+                            class="mood-option mood-{{ option.value }}
+                            {% if latest_mood and latest_mood.date == today and latest_mood.mood == option.value %}selected{% endif %}"
+                            aria-label="I'm feeling {{ option.label }}"
+                        >
+                            <span class="mood-emoji">{{ option.emoji }}</span>
+                            <span>{{ option.label }}</span>
+                        </button>
+
+                    {% endfor %}
+
+                </form>
+
+            </section>
+
+        </div>
+
+
+        <footer class="page-footer">
+            StudentLy. · Your journey, your pace.
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- REAL ACADEMIC DATA -->
+{% if academic_labels %}
+
+    {{ academic_labels|json_script:"academic-labels-data" }}
+    {{ academic_values|json_script:"academic-values-data" }}
+
+    <script>
+        const academicLabels = JSON.parse(
+            document.getElementById("academic-labels-data").textContent
+        );
+
+        const academicValues = JSON.parse(
+            document.getElementById("academic-values-data").textContent
+        );
+
+        const academicCanvas = document.getElementById("academicChart");
+
+        if (academicCanvas) {
+            new Chart(academicCanvas, {
+                type: "line",
+
+                data: {
+                    labels: academicLabels,
+
+                    datasets: [{
+                        label: "GPA",
+                        data: academicValues,
+                        borderColor: "#7162ff",
+                        backgroundColor: "rgba(113, 98, 255, 0.10)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 2,
+                        pointBackgroundColor: "#7162ff"
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: { display: false }
+                    },
+
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: { font: { size: 9 } },
+                            grid: { color: "#eee8f3" }
+                        },
+
+                        x: {
+                            ticks: { font: { size: 9 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+{% endif %}
+
+
+<!-- COMPANION INTERACTION -->
+<script>
+    const companionButton = document.getElementById("companionButton");
+    const companionChat = document.getElementById("companionChat");
+    const companionMessage = document.getElementById("companionMessage");
+    const closeChat = document.getElementById("closeChat");
+    const companionForm = document.getElementById("companionForm");
+    const companionInput = document.getElementById("companionInput");
+    const chatMessages = document.getElementById("chatMessages");
+
+    function toggleChat(open) {
+        companionChat.hidden = !open;
+        companionButton.setAttribute("aria-expanded", String(open));
+
+        if (open) {
+            companionMessage.textContent = "I'm here for you 💜";
+            companionInput.focus();
+        } else {
+            companionMessage.textContent = "Hi, how can I help you?";
+        }
+    }
+
+    companionButton.addEventListener("click", function () {
+        toggleChat(companionChat.hidden);
+    });
+
+    closeChat.addEventListener("click", function () {
+        toggleChat(false);
+    });
+
+    companionForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const text = companionInput.value.trim();
+        if (!text) return;
+
+        const message = document.createElement("div");
+        message.className = "chat-message user-message";
+        message.textContent = text;
+        chatMessages.appendChild(message);
+
+        const reply = document.createElement("div");
+        reply.className = "chat-message bot-message";
+        reply.textContent =
+            "Thank you for sharing that with me 💜 " +
+            "Your feelings matter. Would you like to tell me a little more?";
+
+        chatMessages.appendChild(reply);
+
+        companionInput.value = "";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+/* DARK BACKGROUND OVERLAY */
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.50);
+    backdrop-filter: blur(3px);
+    z-index: 9999;
+    overflow-y: auto;
+}
+
+/* SHOW POPUP */
+.popup-overlay.is-open {
+    display: flex;
+}
+
+/* OUTER POPUP BOX */
+.about-modal {
+    background-color: #ffffff;
+    width: 1020px;
+    max-width: 100%;
+    max-height: 650px;
+    padding: 24px;
+    box-shadow: 14px 14px 0 #442a53;
+    position: relative;
+    overflow-y: auto;
+}
+
+/* GREEN INNER BORDER */
+.modal-frame {
+    background-color: #d1badb;
+    border: 3px solid #1a7431;
+    padding: 40px 45px;
+    position: relative;
+}
+
+/* CLOSE BUTTON */
+.close-icon {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #d83b3b;
+    background: transparent;
+    border: none;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+/* POPUP TITLE */
+.modal-title {
+    font-family: "Grenze Gotisch", serif;
+    color: #1a7431;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 0.5px;
+}
+
+/* BODY TEXT */
+.text-block {
+    font-family: "Grenze Gotisch", serif;
+    font-size: 19px;
+    color: #0b0b0b;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.text-block.bold-heading {
+    font-weight: 700;
+}
+
+/* MISSION HEADING */
+.mission-title {
+    font-family: "Grenze Gotisch", serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #0b0b0b;
+    margin-top: 25px;
+    margin-bottom: 12px;
+}
+
+/* FINAL TAGLINE */
+.closing-line {
+    margin-bottom: 0;
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 600px) {
+    .popup-overlay {
+        padding: 14px;
+    }
+
+    .about-modal {
+        padding: 14px;
+        box-shadow: 7px 7px 0 #442a53;
+    }
+
+    .modal-frame {
+        padding: 38px 20px 25px;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        margin-bottom: 22px;
+    }
+
+    .text-block {
+        font-size: 17px;
+    }
+}

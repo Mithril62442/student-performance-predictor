@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,6 +20,11 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap"
           rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;500;600;700&display=swap"
+      rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/about_popup.css' %}">
 
 
     <style>
@@ -595,11 +601,12 @@
 
         <div class="nav-links">
 
-            <a href="#">
-                How it works
-            </a>
+            <a href="#" data-open-popup="how-it-works">
+    How it works
+</a>
 
-            <a href="#">
+
+            <a href="#" data-open-popup="about">
                 About
             </a>
 
@@ -879,6 +886,10 @@
 
     </main>
 
+{% include "predictor/about_popup.html" %}
+{% include "predictor/how_it_works_popup.html" %}
+
+<script src="{% static 'js/about_popup.js' %}"></script>
 
 </body>
 

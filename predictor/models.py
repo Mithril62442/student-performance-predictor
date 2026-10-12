@@ -159,7 +159,7 @@ class StudySession(models.Model):
     )
 
     date = models.DateField(
-        default=timezone.now
+        default=timezone.localdate
     )
 
     duration_minutes = models.PositiveIntegerField()
@@ -197,7 +197,7 @@ class MoodEntry(models.Model):
     )
 
     date = models.DateField(
-        default=timezone.now
+        default=timezone.localdate
     )
 
     created_at = models.DateTimeField(

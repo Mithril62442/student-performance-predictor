@@ -177,7 +177,7 @@ def login_view(request):
 
             login(request, user)
 
-            return redirect("home")
+            return redirect("dashboard")
 
         messages.error(
             request,
@@ -190,32 +190,48 @@ def login_view(request):
     )    
 @login_required
 def dashboard(request):
-
     user = request.user
+    today = timezone.localdate()
 
-    # PROFILE
-    profile = getattr(
-        user,
-        "student_profile",
-        None
-    )
+    profile = getattr(user, "student_profile", None)
 
-    # ACADEMIC PROGRESS
+    # Save the user's mood when a mood button is selected.
+    if request.method == "POST":
+        mood = request.POST.get("mood")
+
+        valid_moods = {
+            "great", "good", "okay", "low", "stressed"
+        }
+
+        if mood in valid_moods:
+            MoodEntry.objects.create(
+                user=user,
+                mood=mood,
+                date=today
+            )
+
+        return redirect("dashboard")
+
+    # Academic records
     academic_records = AcademicRecord.objects.filter(
         user=user
-    ).order_by("created_at")
+    ).order_by("created_at", "pk")
 
     academic_labels = [
-        record.period
-        for record in academic_records
+        record.period for record in academic_records
     ]
 
     academic_values = [
-        float(record.gpa)
-        for record in academic_records
+        float(record.gpa) for record in academic_records
     ]
 
-    # SUBJECTS
+    current_gpa = (
+        float(academic_records.last().gpa)
+        if academic_records.exists()
+        else None
+    )
+
+    # Subjects
     subjects = Subject.objects.filter(
         user=user
     ).order_by("name")
@@ -226,81 +242,122 @@ def dashboard(request):
         subject_data.append({
             "code": subject.code,
             "name": subject.name,
+            "marks": subject.marks,
             "grade": subject.grade,
             "percentage": subject.percentage(),
         })
 
-    # WEEKLY GOALS
-    today = timezone.localdate()
-
-    week_start = today - timedelta(
-        days=today.weekday()
-    )
+    # Weekly goals
+    week_start = today - timedelta(days=today.weekday())
 
     goals = WeeklyGoal.objects.filter(
         user=user,
         week_start=week_start
     )
 
-    completed_goals = goals.filter(
-        completed=True
-    ).count()
+    total_goals = goals.count()
+    completed_goals = goals.filter(completed=True).count()
 
-    # STUDY ACTIVITY
+    goal_percentage = (
+        round(completed_goals / total_goals * 100)
+        if total_goals else 0
+    )
+
+    # Study sessions for the current week
     week_sessions = StudySession.objects.filter(
         user=user,
         date__gte=week_start,
         date__lte=today
-    )
+    ).order_by("-date", "-created_at")
 
     weekly_minutes = sum(
         session.duration_minutes
         for session in week_sessions
     )
 
-    weekly_hours = round(
-        weekly_minutes / 60,
-        1
-    )
+    weekly_hours = round(weekly_minutes / 60, 1)
 
-    # STUDY STREAK
-    study_dates = set(
+    weekly_session_count = week_sessions.count()
+
+    # Study history
+    all_study_dates = set(
         StudySession.objects.filter(
             user=user
-        ).values_list(
-            "date",
-            flat=True
-        )
+        ).values_list("date", flat=True)
     )
 
+    # Calculate the current streak.
     streak = 0
 
-    if study_dates:
+    streak_date = today
 
-        current_date = max(study_dates)
+    if streak_date not in all_study_dates:
+        streak_date -= timedelta(days=1)
 
-        while current_date in study_dates:
+    while streak_date in all_study_dates:
+        streak += 1
+        streak_date -= timedelta(days=1)
 
-            streak += 1
+    # Last seven days, including today.
+    streak_days = []
 
-            current_date -= timedelta(days=1)
+    for offset in range(6, -1, -1):
+        day = today - timedelta(days=offset)
 
-    # DAILY MOOD
+        minutes = sum(
+            session.duration_minutes
+            for session in week_sessions
+            if session.date == day
+        )
+
+        # Look at all sessions for the day, not just this week's
+        # queryset, to determine whether that day was studied.
+        studied = day in all_study_dates
+
+        streak_days.append({
+            "label": day.strftime("%a")[0],
+            "studied": studied,
+            "hours": round(minutes / 60, 1),
+        })
+
+    # Latest mood entry
     latest_mood = MoodEntry.objects.filter(
         user=user
-    ).first()
+    ).order_by("-date", "-created_at").first()
 
-    # DASHBOARD DATA
+    mood_options = [
+        {"value": "great", "label": "Great", "emoji": "😊"},
+        {"value": "good", "label": "Good", "emoji": "🙂"},
+        {"value": "okay", "label": "Okay", "emoji": "😐"},
+        {"value": "low", "label": "Low", "emoji": "😔"},
+        {"value": "stressed", "label": "Stressed", "emoji": "😣"},
+    ]
+
     context = {
         "profile": profile,
+        "today": today,
+
         "academic_labels": academic_labels,
         "academic_values": academic_values,
+        "current_gpa": current_gpa,
+
         "subjects": subject_data,
+
         "goals": goals,
+        "total_goals": total_goals,
         "completed_goals": completed_goals,
+        "goal_percentage": goal_percentage,
+
+        "week_sessions": week_sessions,
+        "weekly_minutes": weekly_minutes,
+        "weekly_session_count": weekly_session_count,
         "weekly_hours": weekly_hours,
+
         "streak": streak,
+        "streak_days": streak_days,
+
         "latest_mood": latest_mood,
+        "mood_options": mood_options,
     }
 
     return render(
